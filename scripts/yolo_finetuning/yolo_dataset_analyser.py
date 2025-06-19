@@ -2,7 +2,7 @@
 
 import sys
 
-from yolo_utils import (
+from yolo_cleaning_util import (
     analyze_dataset,
     save_problematic_list,
     print_summary

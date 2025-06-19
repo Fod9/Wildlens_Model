@@ -2,7 +2,7 @@
 
 import sys
 from pathlib import Path
-from yolo_utils import (
+from yolo_cleaning_util import (
     read_problematic_list,
     delete_images
 )

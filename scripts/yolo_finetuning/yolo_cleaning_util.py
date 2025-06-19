@@ -5,7 +5,7 @@ from typing import List, Tuple, Dict
 
 
 def get_image_extensions():
-    return ['.jpg']
+    return [".png", ".jpeg", ".jpg", ".gif", ".bmp", ".tiff"]
 
 
 def collect_images(images_dir: Path, extensions: List[str] = None) -> List[Path]:
