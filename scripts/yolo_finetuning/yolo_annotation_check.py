@@ -1,9 +1,10 @@
-#!/usr/bin/env python3
 
 from pathlib import Path
 
 
 def check_yolo_annotations(images_dir: str, labels_dir: str) -> tuple[int, int, int]:
+    # Vérifie les annotations YOLO
+
     images_path = Path(images_dir)
     labels_path = Path(labels_dir)
 
@@ -59,9 +60,22 @@ def check_yolo_annotations(images_dir: str, labels_dir: str) -> tuple[int, int, 
         if len(empty) > 5:
             print(f"   ... et {len(empty) - 5} autres")
 
+    # Proposer de supprimer les images sans annotation
+    if missing:
+        delete = input(f"\nVoulez-vous supprimer les {len(missing)} images SANS fichier d'annotation? (o/n): ")
+        if delete.lower() == 'o':
+            for img_name in missing:
+                img_path = images_path / img_name
+                if img_path.exists():
+                    img_path.unlink()
+                    print(f"Supprimé: {img_name}")
+            print(f"{len(missing)} images supprimées.")
+            # Retirer de la liste pour la sauvegarde
+            missing = []
+
     # Proposer de sauvegarder la liste
     if missing or empty:
-        save = input("\nVoulez-vous sauvegarder la liste des images problématiques? (o/n): ")
+        save = input("\nVoulez-vous sauvegarder la liste des images problématiques restantes? (o/n): ")
         if save.lower() == 'o':
             with open('images_problematiques.txt', 'w') as f:
                 if missing:
@@ -82,7 +96,7 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 3:
-        print("Usage: python yolo_annotation_check.py <images_dir> <labels_dir>")
+        print("Usage: python check_annotations.py <images_dir> <labels_dir>")
         sys.exit(1)
 
     images_dir = sys.argv[1]
