@@ -82,7 +82,7 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 3:
-        print("Usage: python annotation_check.py <images_dir> <labels_dir>")
+        print("Usage: python yolo_annotation_check.py <images_dir> <labels_dir>")
         sys.exit(1)
 
     images_dir = sys.argv[1]
