@@ -3,4 +3,3 @@ __pycache__
 .env
 .idea
 data/yolo_dataset
-notebooks/runs/footprint
