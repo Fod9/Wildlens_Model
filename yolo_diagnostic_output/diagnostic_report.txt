@@ -1,0 +1,28 @@
+YOLO DIAGNOSTIC REPORT
+==================================================
+
+Dataset: data/dataset_no_oat_downsample_spokay
+YOLO Model: notebooks/yolo/best_so_far.pt
+Total Images Tested: 260
+
+PERFORMANCE SUMMARY:
+Current threshold (0.25): 96.92% detection rate
+Best threshold (0.1): 99.62% detection rate
+Potential improvement: 2.69%
+
+CLASS PERFORMANCE (best threshold):
+  lynx: 19/20 (95.00%)
+  ours: 20/20 (100.00%)
+  chien: 20/20 (100.00%)
+  chat: 20/20 (100.00%)
+  coyotte: 20/20 (100.00%)
+  ecureuil: 20/20 (100.00%)
+  rat: 20/20 (100.00%)
+  renard: 20/20 (100.00%)
+  loup: 20/20 (100.00%)
+  lapin: 20/20 (100.00%)
+  raton_laveur: 20/20 (100.00%)
+  puma: 20/20 (100.00%)
+  castor: 20/20 (100.00%)
+
+RECOMMENDATIONS:

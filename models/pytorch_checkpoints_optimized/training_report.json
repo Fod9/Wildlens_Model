@@ -1,0 +1,40 @@
+{
+  "training_config": {
+    "data_dir": "data/dataset_no_oat_downsample_spokay",
+    "yolo_model": "notebooks/yolo/best_so_far.pt",
+    "yolo_threshold": 0.15,
+    "fallback_threshold": 0.1,
+    "fallback_strategy": "smart_crop",
+    "batch_size": 8,
+    "epochs_stage1": 2,
+    "epochs_stage2": 1
+  },
+  "dataset_stats": {
+    "train_samples": 884,
+    "val_samples": 221,
+    "num_classes": 13,
+    "class_names": [
+      "castor",
+      "chat",
+      "chien",
+      "coyotte",
+      "ecureuil",
+      "lapin",
+      "loup",
+      "lynx",
+      "ours",
+      "puma",
+      "rat",
+      "raton_laveur",
+      "renard"
+    ],
+    "train_yolo_success_rate": 0.9558823529411765,
+    "train_fallback_rate": 0.04411764705882353,
+    "val_yolo_success_rate": 0.9728506787330317,
+    "val_fallback_rate": 0.027149321266968326
+  },
+  "training_results": {
+    "stage1_best_val_acc": 14.027149321266968,
+    "stage2_best_val_acc": 18.099547511312217,
+    "improvement_from_finetuning": 4.072398190045249,
+    "final_model_path": 
