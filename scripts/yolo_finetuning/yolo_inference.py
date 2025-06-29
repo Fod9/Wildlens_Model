@@ -2,9 +2,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Tuple
 import numpy as np
-import torch
-from ultralytics import YOLO
-from ultralytics.engine.results import Results, Boxes
+import tensorflow as tf
+import onnxruntime as ort
 from PIL import Image
 import cv2
 from typing import Union
@@ -21,6 +20,21 @@ class BBoxWithScore:
     area: float
 
 
+class TensorFlowResults:
+    """TensorFlow equivalent of Ultralytics Results class."""
+    
+    def __init__(self, boxes: Optional['TensorFlowBoxes'] = None):
+        self.boxes = boxes
+
+
+class TensorFlowBoxes:
+    """TensorFlow equivalent of Ultralytics Boxes class."""
+    
+    def __init__(self, xyxy: np.ndarray, conf: np.ndarray):
+        self.xyxy = xyxy  # Shape: (N, 4) - bounding boxes in xyxy format
+        self.conf = conf  # Shape: (N,) - confidence scores
+
+
 class AreaUtility:
 
     @staticmethod
@@ -30,7 +44,7 @@ class AreaUtility:
         return width * height
 
     @staticmethod
-    def get_areas_from_bboxes(bboxes: Boxes) -> List[float]:
+    def get_areas_from_bboxes(bboxes: TensorFlowBoxes) -> List[float]:
         areas = []
         for bbox in bboxes.xyxy:
             bbox_coords = [float(coord) for coord in bbox]
@@ -51,11 +65,11 @@ class AreaUtility:
 class BBoxUtility:
 
     @staticmethod
-    def normalize_bbox(bbox: torch.Tensor) -> List[float]:
+    def normalize_bbox(bbox: np.ndarray) -> List[float]:
         return [float(coord) for coord in bbox]
 
     @staticmethod
-    def get_bboxes_with_scores(bboxes: Boxes) -> Optional[List[BBoxWithScore]]:
+    def get_bboxes_with_scores(bboxes: TensorFlowBoxes) -> Optional[List[BBoxWithScore]]:
         if bboxes is None or len(bboxes.xyxy) == 0:
             return None
 
@@ -96,19 +110,119 @@ class BBoxUtility:
 
 
 class YOLOInference:
+    """TensorFlow-compatible YOLO inference using ONNX Runtime."""
+    
     def __init__(self, model_path: str, conf_threshold: float = 0.25, iou_threshold: float = 0.45):
-        self.model = YOLO(model_path)
+        # Initialize ONNX Runtime session
+        self.session = ort.InferenceSession(model_path)
+        self.input_name = self.session.get_inputs()[0].name
+        self.output_name = self.session.get_outputs()[0].name
+        
+        # Get input shape info
+        input_shape = self.session.get_inputs()[0].shape
+        self.input_height = input_shape[2]
+        self.input_width = input_shape[3]
+        
         self.conf_threshold = conf_threshold
         self.iou_threshold = iou_threshold
 
-    def predict(self, source: ImageType, save_conf: bool = True) -> Results:
-        results = self.model.predict(
-            source=source,
-            conf=self.conf_threshold,
-            iou=self.iou_threshold,
-            save_conf=save_conf,
+    def preprocess_image(self, image: Union[str, np.ndarray, Image.Image]) -> np.ndarray:
+        # Load image if it's a path
+        if isinstance(image, (str, Path)):
+            img = Image.open(image).convert('RGB')
+        elif isinstance(image, np.ndarray):
+            # Convert BGR to RGB if needed (OpenCV format)
+            if len(image.shape) == 3 and image.shape[2] == 3:
+                img = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+            else:
+                img = Image.fromarray(image)
+        elif isinstance(image, Image.Image):
+            img = image.convert('RGB')
+        else:
+            raise ValueError(f"Unsupported image type: {type(image)}")
+        
+        # Resize to model input size (640x640)
+        img = img.resize((self.input_width, self.input_height), Image.Resampling.LANCZOS)
+        
+        # Convert to numpy array and normalize to [0, 1] - STANDARD normalization, no random scaling
+        img_array = np.array(img, dtype=np.float32)
+        img_array = img_array / 255.0  # Simple division normalization
+        
+        # Convert HWC to CHW (Height-Width-Channels to Channels-Height-Width)
+        img_array = np.transpose(img_array, (2, 0, 1))
+        
+        # Add batch dimension: (3, 640, 640) -> (1, 3, 640, 640)
+        img_array = np.expand_dims(img_array, axis=0)
+        
+        return img_array
+
+    def postprocess_output(self, output: np.ndarray, original_image_size: Tuple[int, int] = None) -> TensorFlowBoxes:
+        # Output format: [batch, 5, num_anchors] where 5 = [x_center, y_center, width, height, confidence]
+        output = output[0]  # Remove batch dimension -> (5, 8400)
+        output = output.T   # Transpose to (8400, 5)
+        
+        # Extract components
+        x_center = output[:, 0]
+        y_center = output[:, 1]
+        width = output[:, 2]
+        height = output[:, 3]
+        confidence = output[:, 4]
+        
+        # Filter by confidence threshold
+        mask = confidence >= self.conf_threshold
+        if not np.any(mask):
+            return TensorFlowBoxes(np.empty((0, 4)), np.empty((0,)))
+        
+        # Apply mask
+        x_center = x_center[mask]
+        y_center = y_center[mask]
+        width = width[mask]
+        height = height[mask]
+        confidence = confidence[mask]
+        
+        # Convert center format to xyxy format
+        x1 = x_center - width / 2
+        y1 = y_center - height / 2
+        x2 = x_center + width / 2
+        y2 = y_center + height / 2
+        
+        # Stack to create bounding boxes
+        boxes = np.stack([x1, y1, x2, y2], axis=1)
+        
+        # Apply NMS (Non-Maximum Suppression)
+        boxes, confidence = self.apply_nms(boxes, confidence)
+        
+        return TensorFlowBoxes(boxes, confidence)
+
+    def apply_nms(self, boxes: np.ndarray, scores: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        if len(boxes) == 0:
+            return boxes, scores
+        
+        # Use TensorFlow's NMS implementation
+        indices = tf.image.non_max_suppression(
+            boxes=tf.constant(boxes, dtype=tf.float32),
+            scores=tf.constant(scores, dtype=tf.float32),
+            max_output_size=100,  # Maximum number of boxes to keep
+            iou_threshold=self.iou_threshold
         )
-        return results[0]
+        
+        # Convert back to numpy
+        indices = indices.numpy()
+        
+        return boxes[indices], scores[indices]
+
+    def predict(self, source: ImageType, save_conf: bool = True) -> TensorFlowResults:
+        # Preprocess image
+        input_array = self.preprocess_image(source)
+        
+        # Run ONNX inference
+        outputs = self.session.run([self.output_name], {self.input_name: input_array})
+        output = outputs[0]  # Get the first (and only) output
+        
+        # Post-process to get bounding boxes
+        boxes = self.postprocess_output(output)
+        
+        return TensorFlowResults(boxes)
 
     def infer_and_get_best_crop(self, image_path: str) -> Optional[Tuple[BBoxWithScore, np.ndarray]]:
         # Perform inference
@@ -171,7 +285,7 @@ class YOLOInference:
 
     def get_all_crops_from_array(self, image_array: np.ndarray) -> List[Tuple[BBoxWithScore, np.ndarray]]:
         # Perform inference
-        results = self.predict_from_array(image_array)
+        results = self.predict(image_array)
 
         # Get bboxes with scores
         bboxes_with_scores = BBoxUtility.get_bboxes_with_scores(results.boxes)
@@ -192,10 +306,9 @@ if __name__ == "__main__":
     # Initialize the inference class
     yolo_inference = YOLOInference('best_so_far.pt', conf_threshold=0.25, iou_threshold=0.45)
 
-    image_array = cv2.imread('test_images/footprint_1.jpeg')
-    image_array = cv2.cvtColor(image_array, cv2.COLOR_BGR2RGB)
-
-    result_from_array = yolo_inference.infer_and_get_best_crop_from_array(image_array)
+    dummy_image = np.random.randint(0, 255, (640, 640, 3), dtype=np.uint8)
+    
+    result_from_array = yolo_inference.infer_and_get_best_crop_from_array(dummy_image)
     if result_from_array is not None:
         best_bbox, cropped_image = result_from_array
         print(f"From array - Score: {best_bbox.score:.4f}, Shape: {cropped_image.shape}")
