@@ -28,8 +28,9 @@ This project combines YOLO (PyTorch) for footprint detection with MobileNet (Ten
 Open and run `notebooks/models/mobilenet.ipynb` for the complete two-stage training pipeline.
 
 ### YOLO Preprocessing
+
 ```python
-from scripts.yolo_finetuning.yolo_inference import YOLOInference
+from scripts.yolo_finetuning.yolo_inference_pytorch import YOLOInference
 
 yolo_inference = YOLOInference('notebooks/yolo/best_so_far.pt')
 result = yolo_inference.infer_and_get_best_crop(image_path)
