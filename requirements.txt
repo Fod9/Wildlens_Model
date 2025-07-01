@@ -1,1 +1,5 @@
 tensorflow[and-cuda]==2.18.0
+seaborn
+scikit-learn
+onnxruntime==1.22.0
+opencv-python
