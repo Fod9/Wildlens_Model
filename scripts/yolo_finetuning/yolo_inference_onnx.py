@@ -267,7 +267,7 @@ class YOLOONNXInference:
 
         return detections
 
-    def infer_and_get_best_crop(self, image_path: str) -> Optional[Tuple[BBoxWithScore, np.ndarray]]:
+    def infer_and_get_best_crop(self, image_path: str) -> Optional[tuple[BBoxWithScore, ndarray]]:
         """Effectue l'inférence et retourne le meilleur crop"""
         # Perform inference
         detections = self.predict(image_path)
