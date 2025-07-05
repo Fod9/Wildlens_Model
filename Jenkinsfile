@@ -16,24 +16,9 @@ pipeline {
     }
     
     stages {
-        stage('Checkout') {
+        stage('checkout') {
             steps {
-                checkout scm
-            }
-        }
-        
-        stage('Build') {
-            steps {
-                echo "Building from branch: ${env.BRANCH_NAME}"
-                echo "Repository: ${env.repository_name}"
-                echo "Ref: ${env.ref}"
-                // Vos commandes de build ici
-            }
-        }
-        
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
+                echo 'Checkout'
                 // Vos commandes de test ici
             }
         }
