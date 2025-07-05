@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     triggers {
         GenericTrigger(
             genericVariables: [
@@ -14,7 +14,7 @@ pipeline {
             causeString: 'Triggered by GitHub webhook'
         )
     }
-    
+
     stages {
         stage('checkout') {
             steps {
