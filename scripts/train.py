@@ -1,5 +1,5 @@
 import tensorflow as tf
-import keras
+from tf import keras
 import os
 
 

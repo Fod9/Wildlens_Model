@@ -1,4 +1,5 @@
-import keras
+import tensorflow as tf
+from tf import keras
 
 def prepared_dataset():
     """
