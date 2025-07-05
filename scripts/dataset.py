@@ -11,19 +11,19 @@ def prepared_dataset():
     """
 
     train_ds = keras.preprocessing.image_dataset_from_directory(
-        "../../data/OpenAnimalTracks/cropped_imgs/train",
+        "data/OpenAnimalTracks/cropped_imgs/train",
         image_size=(224, 224),
         batch_size=16,
     )
 
     test_ds = keras.preprocessing.image_dataset_from_directory(
-        "../../data/OpenAnimalTracks/cropped_imgs/test",
+        "data/OpenAnimalTracks/cropped_imgs/test",
         image_size=(224, 224),
         batch_size=16,
     )
 
     val_ds = keras.preprocessing.image_dataset_from_directory(
-        "../../data/OpenAnimalTracks/cropped_imgs/val",
+        "data/OpenAnimalTracks/cropped_imgs/val",
         image_size=(224, 224),
         batch_size=16,
     )
