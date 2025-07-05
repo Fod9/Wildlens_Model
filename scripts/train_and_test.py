@@ -2,6 +2,7 @@ from train import complete_training
 from test import test_model
 from dataviz import vizualize
 import json
+import os
 
 def main():
 
@@ -12,10 +13,17 @@ def main():
     new_metrics = vizualize(model, real_val_ds)
 
     if test_model(model, new_metrics):
+        os.makedirs("weights", exist_ok=True)
         save_path = "weights/wildlens_multiclassifier.keras"
         model.save(save_path)
+
+        os.makedirs("metrics", exist_ok=True)
         save_metrics_path = "metrics/metrics.json"
         with open(save_metrics_path, "w") as f:
             json.dump(new_metrics, f)
     else:
         print("Model did not pass the test.")
+
+
+if __name__ == "__main__":
+    main()
