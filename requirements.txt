@@ -1,9 +1,9 @@
-keras==3.10.0
-matplotlib==3.10.3
-numpy==2.3.1
-Pillow==11.3.0
+keras
+matplotlib<=3.10.3
+numpy~=2.2.0
+pillow
 scikit_learn==1.7.0
-seaborn==0.13.2
-tensorflow==2.19.0
+seaborn>=0.13.2
+tensorflow[and-cuda]~=2.18.0
 tqdm==4.67.1
-ultralytics==8.3.162
+ultralytics~=8.3.162
