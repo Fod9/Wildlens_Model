@@ -1,6 +1,6 @@
-from train import complete_training
-from test import test_model
-from dataviz import vizualize
+from scripts.train import complete_training
+from scripts.test import test_model
+from scripts.dataviz import vizualize
 import json
 import os
 
