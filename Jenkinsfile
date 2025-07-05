@@ -43,7 +43,7 @@ pipeline {
                 sh '''
                         . venv/bin/activate
 
-                        python3 -m scripts/test_and_train
+                        python3 scripts/test_and_train.py
                 '''
             }
         }
