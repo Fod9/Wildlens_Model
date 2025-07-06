@@ -55,7 +55,7 @@ pipeline {
 
         stage('Trigger API Pipeline') {
             steps {
-                build job: 'Wildlens_Backend/prod',
+                build job: 'Wildlens_Backend%2Fprod',
                 wait: false,
                 parameters: [
                     string(name: 'jenkins-generic-webhook-trigger-plugin_uuid', value: '', description: '')
