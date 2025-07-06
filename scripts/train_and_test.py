@@ -3,6 +3,7 @@ from scripts.test import test_model
 from scripts.dataviz import vizualize
 import json
 import os
+import sys
 
 def main():
     # Train the model
@@ -22,6 +23,7 @@ def main():
             json.dump(new_metrics, f)
     else:
         print("Model did not pass the test.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

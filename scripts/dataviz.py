@@ -100,10 +100,9 @@ def evaluate_model(model: Any, real_val_ds: Any):
     y_true = np.array(y_true)[valid_indices]
     y_pred = np.array(y_pred)[valid_indices]
 
-    print(f"Nombre d'échantillons après filtrage: {len(y_true)}")
-    print(f"Classes uniques après filtrage: {sorted(set(y_true))}")
-    print(f"Classes uniques prédites après filtrage: {sorted(set(y_pred))}")
-    print(f"Nombre de classes après filtrage: {len(class_names)}")
+    print(sorted(set(y_true)))
+    print(sorted(set(y_pred)))
+    print(len(class_names))
 
     print(classification_report(y_true, y_pred, target_names=class_names))
     
@@ -125,11 +124,13 @@ def evaluate_model(model: Any, real_val_ds: Any):
     row_indices, col_indices = np.unravel_index(flat_indices, cm_errors.shape)
     
     for i in range(len(flat_indices) - 1, -1, -1):
-        if cm_errors[row_indices[i], col_indices[i]] > 0:
+        if col_indices[i] < len(class_names) and row_indices[i] < len(class_names):
             true_class = class_names[row_indices[i]]
             pred_class = class_names[col_indices[i]]
             count = cm_errors[row_indices[i], col_indices[i]]
             print(f"{true_class} → {pred_class}: {count} erreurs")
+        else:
+            print(f"Index hors limites: true={row_indices[i]}, pred={col_indices[i]}")
     
     # Afficher les performances par classe
     print(f"\n" + "=" * 40)

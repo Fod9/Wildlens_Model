@@ -21,7 +21,7 @@ pipeline {
     }
 
     environment {
-        SHARED_MODEL_PATH = "/home/shared/Wildlens/models/multiclassifier/wildlens_multiclassifier.keras"
+        SHARED_MODEL_PATH = "/home/shared/Wildlens/models/multiclassifier/wildlens_multiclassifier_pipeline.keras"
     }
 
     stages {
@@ -60,7 +60,7 @@ pipeline {
         stage('Copy Model to Shared Folder') {
             steps {
                 sh '''
-                    cp weights/wildlens_multiclassifier.keras ${SHARED_MODEL_PATH}
+                    cp weights/wildlens_multiclassifier_pipeline.keras ${SHARED_MODEL_PATH}
                 '''
             }
         }
