@@ -30,6 +30,7 @@ def compute_plot(history: Any):
     
     plt.tight_layout()
     # plt.show()
+    os.makedirs("metrics", exist_ok=True)
     plt.savefig("metrics/mobilenet_finetuned_learning_curves.png")
     
 
@@ -43,7 +44,7 @@ def evaluate_model(model: Any, real_val_ds: Any):
     # Matrice de confusion sur les 13 classes
     
     # Obtenir les noms des classes depuis le répertoire de données
-    data_dir = "data/dataset_no_oat_downsample"
+    data_dir = "/home/shared/Wildlens/full_dataset_wildlens/dataset_no_oat_downsample"
     class_names = sorted([d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))])
     print(f"Classes: {class_names}")
     print(f"Nombre de classes: {len(class_names)}")
@@ -80,6 +81,8 @@ def evaluate_model(model: Any, real_val_ds: Any):
     plt.yticks(rotation=0)
     plt.tight_layout()
     #plt.show()
+
+    os.makedirs("metrics", exist_ok=True)
     plt.savefig("metrics/mobilenet_confusion_matrix.png")
     
     # Calculer et afficher les métriques par classe

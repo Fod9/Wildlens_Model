@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'python:3.12'
-            args '-v /home/shared/Wildlens/full_dataset_wildlens:/mnt/dataset'
+            args '-v /home/shared/Wildlens:/home/shared/Wildlens'
         }
     }
 
@@ -28,7 +28,7 @@ pipeline {
 
         stage('Check mounts') {
             steps {
-            sh 'ls -l /mnt/dataset/OpenAnimalTracks/cropped_imgs/train'
+            sh 'ls -l /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/train'
             sh 'ls -l /var/lib/jenkins/workspace/Wildlens_Training'
             }
         }
@@ -67,11 +67,7 @@ pipeline {
 
         stage('Trigger API Pipeline') {
             steps {
-                build job: 'update-api-model-pipeline',
-                      parameters: [
-                          string(name: 'MODEL_PATH', value: "${SHARED_MODEL_PATH}")
-                      ],
-                      wait: false
+                build job: 'wildlens_backend', wait: false
             }
         }
     }

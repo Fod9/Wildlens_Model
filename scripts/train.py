@@ -53,8 +53,6 @@ def transfer_learning_model(model: keras.Model):
         ]
     )
 
-    print("Modèle fine-tuné sauvegardé sous 'mobilenet_finetuned.keras'")
-
     return model, history, real_val_ds
 
 

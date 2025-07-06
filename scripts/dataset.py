@@ -2,9 +2,9 @@ import tensorflow as tf
 from tensorflow import keras
 import os
 
-train_dir = "/mnt/dataset/OpenAnimalTracks/cropped_imgs/train"
-test_dir = "/mnt/dataset/OpenAnimalTracks/cropped_imgs/test"
-val_dir = "/mnt/dataset/OpenAnimalTracks/cropped_imgs/val"
+train_dir = "/home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/train"
+test_dir = "/home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/test"
+val_dir = "/home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/val"
 
 def prepared_dataset():
     """
@@ -45,7 +45,7 @@ def prepared_dataset_for_tf():
     """
 
     real_ds = keras.preprocessing.image_dataset_from_directory(
-        "/mnt/dataset/dataset_no_oat_downsample",
+        "/home/shared/Wildlens/full_dataset_wildlens/dataset_no_oat_downsample",
         image_size=(224, 224),
         batch_size=32,
     )
