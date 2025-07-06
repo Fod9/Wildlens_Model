@@ -1,7 +1,8 @@
 pipeline {
     agent {
-        node {
-            label 'python-3-12'
+        docker {
+            image 'python:3.12'
+            args '-v /home/shared/Wildlens/full_dataset_wildlens:/mnt/dataset'
         }
     }
 
@@ -21,25 +22,9 @@ pipeline {
 
     environment {
         SHARED_MODEL_PATH = "/home/shared/Wildlens/models/multiclassifier/wildlens_multiclassifier.keras"
-        WILDLENS_DATA = "/home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks"
     }
 
     stages {
-
-        stage('Debug Dataset Path') {
-            steps {
-                sh '''
-                    echo "User running the job:"
-                    whoami
-
-                    echo "Workspace path:"
-                    pwd
-
-                    echo "Listing /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/train:"
-                    ls -l /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/train || echo "Path not found or inaccessible"
-                '''
-            }
-        }
 
         stage('Install Dependencies') {
             steps {

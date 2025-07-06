@@ -2,10 +2,9 @@ import tensorflow as tf
 from tensorflow import keras
 import os
 
-DATASET_ROOT = os.environ.get("WILDLENS_DATA", "data/OpenAnimalTracks")
-train_dir = os.path.join(DATASET_ROOT, "cropped_imgs/train")
-test_dir = os.path.join(DATASET_ROOT, "cropped_imgs/test")
-val_dir = os.path.join(DATASET_ROOT, "cropped_imgs/val")
+train_dir = "/mnt/dataset/OpenAnimalTracks/cropped_imgs/train"
+test_dir = "/mnt/dataset/OpenAnimalTracks/cropped_imgs/test"
+val_dir = "/mnt/dataset/OpenAnimalTracks/cropped_imgs/val"
 
 def prepared_dataset():
     """
