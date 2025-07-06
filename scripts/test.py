@@ -3,14 +3,13 @@ import json
 from tensorflow.keras.models import load_model
 import numpy as np
 
-def test_prediction_output_shape():
-    model = load_model("weights/wildlens_multiclassifier.keras")
+def test_prediction_output_shape(model):
     dummy_input = np.random.rand(1, 224, 224, 3)
     prediction = model.predict(dummy_input)
     return prediction.shape[1] >= 13
 
 def test_model(model, new_metrics):
-    if not test_prediction_output_shape():
+    if not test_prediction_output_shape(model):
         return False
 
     metrics_path = "metrics/metrics.json"
