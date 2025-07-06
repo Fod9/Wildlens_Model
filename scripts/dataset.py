@@ -45,7 +45,7 @@ def prepared_dataset_for_tf():
     """
 
     real_ds = keras.preprocessing.image_dataset_from_directory(
-        "data/dataset_no_oat_downsample",
+        "/mnt/dataset/dataset_no_oat_downsample",
         image_size=(224, 224),
         batch_size=32,
     )

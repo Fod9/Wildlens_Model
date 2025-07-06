@@ -26,6 +26,13 @@ pipeline {
 
     stages {
 
+        stage('Check mounts') {
+            steps {
+            sh 'ls -l /mnt/dataset/OpenAnimalTracks/cropped_imgs/train'
+            sh 'ls -l /var/lib/jenkins/workspace/Wildlens_Training'
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 sh '''
