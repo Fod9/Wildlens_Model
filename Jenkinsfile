@@ -31,7 +31,7 @@ pipeline {
                     rm -f data/OpenAnimalTracks
                     ln -s /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks data/OpenAnimalTracks
                     echo "Symlink created:"
-                    ls -l data/OpenAnimalTracks
+                    ls -l data/OpenAnimalTracks/cropped_imgs
                     echo "Target dir:"
                     ls -l data/OpenAnimalTracks/cropped_imgs/train
                 '''
