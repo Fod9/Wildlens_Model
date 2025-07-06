@@ -19,6 +19,6 @@ def test_model(model, new_metrics):
             old_metrics = json.load(f)
         print("Old metrics loaded:", old_metrics.get("val_loss", float("inf")))
         print("New metrics:", new_metrics.get("val_loss", float("inf")))
-        return old_metrics.get("val_loss", float("inf")) >= new_metrics.get("val_loss", float("inf"))
+        return old_metrics.get("val_loss", float("inf")) <= new_metrics.get("val_loss", float("inf"))
     return True
 
