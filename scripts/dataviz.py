@@ -89,6 +89,11 @@ def evaluate_model(model: Any, real_val_ds: Any):
     print("\n" + "=" * 60)
     print("RAPPORT DE CLASSIFICATION DÉTAILLÉ")
     print("=" * 60)
+
+    print(sorted(set(y_true)))
+    print(sorted(set(y_pred)))
+    print(len(class_names))
+
     print(classification_report(y_true, y_pred, target_names=class_names))
     
     # Calculer l'accuracy globale
