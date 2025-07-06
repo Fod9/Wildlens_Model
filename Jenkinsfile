@@ -24,6 +24,21 @@ pipeline {
     }
 
     stages {
+
+        stage('Debug Symlink') {
+            steps {
+                sh '''
+                    echo "Symlink info:"
+                    ls -l data/OpenAnimalTracks
+                    echo "Resolved absolute path:"
+                    readlink -f data/OpenAnimalTracks
+                    echo "Listing resolved contents:"
+                    ls -l data/OpenAnimalTracks/cropped_imgs/train || true
+                    exit 1
+                '''
+                }
+        }
+
         stage('Install Dependencies') {
             steps {
                 sh '''
