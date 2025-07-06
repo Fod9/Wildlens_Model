@@ -6,6 +6,7 @@ import numpy as np
 def test_prediction_output_shape(model):
     dummy_input = np.random.rand(1, 224, 224, 3)
     prediction = model.predict(dummy_input)
+    print("Prediction shape:", prediction.shape)
     return prediction.shape[1] >= 13
 
 def test_model(model, new_metrics):
@@ -16,6 +17,8 @@ def test_model(model, new_metrics):
     if os.path.exists(metrics_path):
         with open(metrics_path, "r") as f:
             old_metrics = json.load(f)
+        print("Old metrics loaded:", old_metrics.get("val_loss", float("inf")))
+        print("New metrics:", new_metrics.get("val_loss", float("inf")))
         return old_metrics.get("val_loss", float("inf")) >= new_metrics.get("val_loss", float("inf"))
     return True
 

@@ -21,6 +21,7 @@ def main():
         save_metrics_path = "metrics/metrics.json"
         with open(save_metrics_path, "w") as f:
             json.dump(new_metrics, f)
+        print("Model passed the test.")
     else:
         print("Model did not pass the test.")
         sys.exit(1)
