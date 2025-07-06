@@ -25,6 +25,33 @@ pipeline {
 
     stages {
 
+        stage('Precheck: Shared Volume & Dataset') {
+            steps {
+                sh '''
+                    echo "=== Precheck: Debug Info ==="
+                    echo "Hostname: $(hostname)"
+                    echo "User: $(whoami)"
+                    echo "CWD: $(pwd)"
+                    echo ""
+
+                    echo "=== Mount Check ==="
+                    mount | grep /home/shared && echo "/home/shared is mounted" || echo "/home/shared is NOT mounted"
+                    echo ""
+
+                    echo "=== Autofs Trigger ==="
+                    # Try to trigger autofs or confirm dataset exists
+                    ls -ld /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks || echo "Autofs trigger failed or path missing"
+                    echo ""
+
+                    echo "=== Final Check: Train Directory ==="
+                    ls -l /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/train || {
+                        echo "ERROR: Dataset path is not accessible.";
+                        exit 1;
+                    }
+                '''
+            }
+        }
+
         stage('Check Symlink') {
             steps {
                 sh '''
