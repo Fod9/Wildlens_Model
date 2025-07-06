@@ -26,6 +26,21 @@ pipeline {
 
     stages {
 
+        stage('Debug Dataset Path') {
+            steps {
+                sh '''
+                    echo "User running the job:"
+                    whoami
+
+                    echo "Workspace path:"
+                    pwd
+
+                    echo "Listing /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/train:"
+                    ls -l /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/train || echo "Path not found or inaccessible"
+                '''
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 sh '''
