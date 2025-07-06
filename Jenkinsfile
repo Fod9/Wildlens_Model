@@ -25,15 +25,10 @@ pipeline {
 
     stages {
 
-        stage('Setup Dataset Symlink') {
+        stage('Check Symlink') {
             steps {
                 sh '''
-                    rm -f data/OpenAnimalTracks
-                    ln -s /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks data/OpenAnimalTracks
-                    echo "Symlink created:"
-                    ls -l data/OpenAnimalTracks/cropped_imgs
-                    echo "Target dir:"
-                    ls -l data/OpenAnimalTracks/cropped_imgs/train
+                    ls -l /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/train
                 '''
             }
         }
