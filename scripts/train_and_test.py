@@ -14,7 +14,7 @@ def main():
 
     if test_model(model, new_metrics):
         os.makedirs("weights", exist_ok=True)
-        save_path = "weights/wildlens_multiclassifier.keras"
+        save_path = "/home/shared/Wildlens/models/multiclassifier/wildlens_multiclassifier_pipeline.keras"
         model.save(save_path)
 
         os.makedirs("metrics", exist_ok=True)

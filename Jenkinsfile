@@ -20,10 +20,6 @@ pipeline {
         )
     }
 
-    environment {
-        SHARED_MODEL_PATH = "/home/shared/Wildlens/models/multiclassifier/wildlens_multiclassifier_pipeline.keras"
-    }
-
     stages {
 
         stage('Check mounts') {
@@ -53,14 +49,6 @@ pipeline {
                         . venv/bin/activate
 
                         python3 -m scripts.train_and_test
-                '''
-            }
-        }
-
-        stage('Copy Model to Shared Folder') {
-            steps {
-                sh '''
-                    cp weights/wildlens_multiclassifier_pipeline.keras ${SHARED_MODEL_PATH}
                 '''
             }
         }
