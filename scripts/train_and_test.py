@@ -5,11 +5,6 @@ import json
 import os
 
 def main():
-    print("Listing training folder:")
-    import os
-    train_path = "/home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks/cropped_imgs/train"
-    print(os.path.exists(train_path))
-    print(os.listdir(train_path))
     # Train the model
     model, history, real_val_ds = complete_training()
 

@@ -1,5 +1,11 @@
 import tensorflow as tf
 from tensorflow import keras
+import os
+
+DATASET_ROOT = os.environ.get("WILDLENS_DATA", "data/OpenAnimalTracks")
+train_dir = os.path.join(DATASET_ROOT, "cropped_imgs/train")
+test_dir = os.path.join(DATASET_ROOT, "cropped_imgs/test")
+val_dir = os.path.join(DATASET_ROOT, "cropped_imgs/val")
 
 def prepared_dataset():
     """
@@ -11,19 +17,19 @@ def prepared_dataset():
     """
 
     train_ds = keras.preprocessing.image_dataset_from_directory(
-        "data/OpenAnimalTracks/cropped_imgs/train",
+        train_dir,
         image_size=(224, 224),
         batch_size=16,
     )
 
     test_ds = keras.preprocessing.image_dataset_from_directory(
-        "data/OpenAnimalTracks/cropped_imgs/test",
+        test_dir,
         image_size=(224, 224),
         batch_size=16,
     )
 
     val_ds = keras.preprocessing.image_dataset_from_directory(
-        "data/OpenAnimalTracks/cropped_imgs/val",
+        val_dir,
         image_size=(224, 224),
         batch_size=16,
     )
