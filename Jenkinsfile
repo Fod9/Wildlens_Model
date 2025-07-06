@@ -25,17 +25,11 @@ pipeline {
 
     stages {
 
-        stage('Debug Shared Folder') {
+        stage('Setup Dataset Symlink') {
             steps {
                 sh '''
-                    echo "Checking /home/shared..."
-                    ls -l /home/shared/Wildlens || echo "❌ Not accessible"
-
-                    echo "Checking symbolic link:"
-                    readlink -f data/OpenAnimalTracks || echo "❌ Broken symlink"
-
-                    echo "Reading sample image dir:"
-                    ls -l data/OpenAnimalTracks/cropped_imgs/train || echo "❌ Train folder not readable"
+                    rm -f data/OpenAnimalTracks
+                    ln -s /home/shared/Wildlens/full_dataset_wildlens/OpenAnimalTracks data/OpenAnimalTracks
                 '''
             }
         }
