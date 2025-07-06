@@ -25,6 +25,16 @@ pipeline {
 
     stages {
 
+        stage('Force Mount') {
+            steps {
+
+                sh '''
+                    echo "Mounting /home/shared if necessary..."
+                    sudo mount /home/shared || echo "Already mounted or not needed"
+                '''
+            }
+        }
+
         stage('Precheck: Shared Volume & Dataset') {
             steps {
                 sh '''
