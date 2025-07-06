@@ -94,6 +94,17 @@ def evaluate_model(model: Any, real_val_ds: Any):
     print(sorted(set(y_pred)))
     print(len(class_names))
 
+    valid_indices = [i for i, pred in enumerate(y_pred) if pred <= 12]
+
+    # Appliquer le filtre
+    y_true = np.array(y_true)[valid_indices]
+    y_pred = np.array(y_pred)[valid_indices]
+
+    print(f"Nombre d'échantillons après filtrage: {len(y_true)}")
+    print(f"Classes uniques après filtrage: {sorted(set(y_true))}")
+    print(f"Classes uniques prédites après filtrage: {sorted(set(y_pred))}")
+    print(f"Nombre de classes après filtrage: {len(class_names)}")
+
     print(classification_report(y_true, y_pred, target_names=class_names))
     
     # Calculer l'accuracy globale
